@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="description" content="一个数据驱动的个人档案页模板 · iOS 视觉风格 · 页面内可视化编辑，填完即用">
+<title>个人档案 · Profile Template</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- 全局 SVG 定义：logo 渐变由开屏、侧栏头像、导航头像共享 -->
+<svg class="svg-defs" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="logoGradient" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0%" stop-color="#0a84ff"/>
+    <stop offset="52%" stop-color="#5e5ce6"/>
+    <stop offset="100%" stop-color="#bf5af2"/>
+  </linearGradient>
+</defs></svg>
+
+<!-- ══ 开屏动画（数据驱动，内容由 app.js 注入） ══ -->
+<div class="splash" id="splash" aria-hidden="true">
+  <span class="splash-glow"></span>
+  <div class="splash-center">
+    <div class="splash-logo-wrap">
+      <span class="splash-ripple r1"></span>
+      <span class="splash-ripple r2"></span>
+      <div class="splash-logo" id="splashLogo"></div>
+    </div>
+    <p class="splash-eyebrow" id="splashEyebrow"></p>
+    <h2 class="splash-name" id="splashName"></h2>
+    <p class="splash-sub" id="splashSub"></p>
+  </div>
+  <div class="splash-bottom">
+    <div class="splash-progress"><i></i></div>
+    <p class="splash-footer" id="splashFooter"></p>
+    <p class="splash-skip">轻点任意处跳过</p>
+  </div>
+  <span class="splash-home"></span>
+</div>
+
+<!-- 环境光晕（纯装饰，不参与交互） -->
+<div class="ambience" aria-hidden="true">
+  <span class="orb orb-a"></span>
+  <span class="orb orb-b"></span>
+  <span class="orb orb-c"></span>
+</div>
+
+<!-- ══ 顶部导航：毛玻璃 + 紧凑标题 + 分段控件 ══ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#top" aria-label="回到顶部">
+      <span class="nav-avatar" id="navAvatar"></span>
+      <span class="nav-brand-text" id="navBrandText"></span>
+    </a>
+
+    <nav class="segmented" id="segmented" aria-label="页面模块导航"></nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="editBtn" type="button" aria-label="编辑档案" title="编辑档案">
+        <span id="editIcon"></span>
+      </button>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="切换外观" title="切换深色 / 浅色">
+        <span id="themeIcon"></span>
+      </button>
+      <button class="icon-btn structure-btn" id="structureBtn" type="button" aria-label="查看框架结构">
+        <span id="structureIcon"></span><span class="structure-label">结构说明</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="shell" id="top">
+
+  <!-- ══ iOS 大标题区（随滚动折叠到导航栏） ══ -->
+  <div class="large-title" id="largeTitle">
+    <p class="eyebrow" id="pageEyebrow">PROFILE · 个人档案</p>
+    <h1 id="pageTitle"></h1>
+    <p class="large-sub" id="pageTagline"></p>
+    <div class="large-meta" id="pageMeta"></div>
+  </div>
+
+  <!-- ══ 两栏布局：左 sticky 个人卡 / 右模块流 ══ -->
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="基本信息"></aside>
+
+    <!-- 空状态：data.js 里还没有内容时显示（有内容自动隐藏） -->
+    <section class="onboarding card" id="onboarding" hidden aria-labelledby="obTitle">
+      <div class="ob-logo" id="obLogo" aria-hidden="true"></div>
+      <p class="ob-eyebrow">START HERE</p>
+      <h2 class="ob-title" id="obTitle">这是你的档案页</h2>
+      <p class="ob-sub">现在它是空的 —— 但骨架、动效、深浅主题都已经搭好。填上几行字，它会立刻变成你自己的样子。</p>
+
+      <ol class="ob-steps">
+        <li class="ob-step"><span class="ob-num">1</span><div><b>填写基本信息</b><p>姓名、身份、一句话介绍、社交链接</p></div></li>
+        <li class="ob-step"><span class="ob-num">2</span><div><b>添加经历与技能</b><p>教育、实践、技能、作品 —— 不需要的模块留空就好</p></div></li>
+        <li class="ob-step"><span class="ob-num">3</span><div><b>导出 data.js</b><p>替换 <code>assets/data.js</code>，你的页面就正式上线</p></div></li>
+      </ol>
+
+      <div class="ob-actions">
+        <button class="ob-primary" id="btnStartEdit" type="button">开始填写</button>
+        <button class="ob-ghost" id="btnTryExample" type="button">先看看示例</button>
+      </div>
+      <p class="ob-foot">内容只保存在你本机浏览器里，不会上传到任何服务器</p>
+    </section>
+
+    <div class="content" id="content" aria-label="档案详情"></div>
+  </div>
+
+  <footer class="footer">
+    <span id="footerMeta"></span>
+    <span class="footer-dot">·</span>
+    <span>数据驱动渲染 · 内容与结构分离</span>
+    <button class="footer-edit" id="footerEdit" type="button">编辑这份档案</button>
+  </footer>
+</main>
+
+<!-- ══ 移动端底部 Tab Bar ══ -->
+<nav class="tabbar" id="tabbar" aria-label="底部模块导航"></nav>
+
+<!-- ══ 结构说明 Sheet（iOS 风格模态） ══ -->
+<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+<section class="sheet" id="structureSheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-grabber" aria-hidden="true"></div>
+  <div class="sheet-head">
+    <div>
+      <p class="eyebrow">ARCHITECTURE</p>
+      <h2 id="sheetTitle">框架结构与字段设计</h2>
+    </div>
+    <button class="icon-btn" id="sheetClose" type="button" aria-label="关闭"></button>
+  </div>
+
+  <div class="sheet-body">
+    <!-- 分层架构 -->
+    <div class="arch-layers">
+      <div class="arch-layer"><span class="layer-badge layer-data">数据层</span><code>assets/data.js</code><p>唯一数据源，默认全空</p></div>
+      <div class="arch-layer"><span class="layer-badge layer-render">渲染层</span><code>assets/app.js</code><p>模块注册表 + 组件 + 交互</p></div>
+      <div class="arch-layer"><span class="layer-badge layer-style">编辑器</span><code>assets/editor.js</code><p>可视化填写，可整块删掉</p></div>
+      <div class="arch-layer"><span class="layer-badge layer-style">样式层</span><code>assets/styles.css</code><p>设计令牌、组件、动效</p></div>
+      <div class="arch-layer"><span class="layer-badge layer-skeleton">骨架层</span><code>index.html</code><p>语义容器，不含内容文案</p></div>
+      <div class="arch-layer"><span class="layer-badge layer-skeleton">示例</span><code>assets/data.example.js</code><p>「先看看示例」用</p></div>
+    </div>
+
+    <h3 class="sheet-h3">两种填写方式</h3>
+    <div class="layout-note">
+      <p><b>页面内</b>：点右上角铅笔 → 表单填写 → 关掉就能看到效果 → 「导出 data.js」覆盖 <code>assets/data.js</code>。草稿自动存在浏览器本地，刷新不丢。</p>
+      <p><b>改文件</b>：直接编辑 <code>assets/data.js</code>，字段含义都写在注释里；想照抄结构就看 <code>data.example.js</code>。</p>
+    </div>
+
+    <h3 class="sheet-h3">数据结构</h3>
+    <div class="field-table" role="table" aria-label="数据结构表">
+      <div class="field-row field-head" role="row">
+        <span role="columnheader">模块 / key</span><span role="columnheader">核心字段</span><span role="columnheader">类型</span>
+      </div>
+      <div class="field-row" role="row"><span><b>01</b> 页面信息 <code>meta</code></span><span>pageTitle · tagline · eyebrow · version · updatedAt</span><span>Object</span></div>
+      <div class="field-row" role="row"><span><b>02</b> 开屏 <code>splash</code></span><span>enabled · eyebrow · title · subtitle · footer · duration · fastDuration</span><span>Object</span></div>
+      <div class="field-row" role="row"><span><b>03</b> 外观与模块 <code>settings</code></span><span>showEdit · brand{avatarMode,logoColors,avatarGradient} · sections[{id,enabled,nav,title,desc,tint}]</span><span>Object</span></div>
+      <div class="field-row" role="row"><span><b>04</b> 基本信息 <code>basic</code></span><span>name · nameEn · title · initials · location · status · bio · tags[] · stats[] · social[]</span><span>Object</span></div>
+      <div class="field-row" role="row"><span><b>05</b> 教育背景 <code>education</code></span><span>id · school · schoolEn · degree · major · period{start,end} · location · glyph · badge · tint · description · highlights[]</span><span>Array</span></div>
+      <div class="field-row" role="row"><span><b>06</b> 校园实践 <code>campus</code></span><span>id · org · orgEn · role · type · period · location · glyph · badge · description · achievements[] · stack[]</span><span>Array</span></div>
+      <div class="field-row" role="row"><span><b>07</b> 技能标签 <code>skills</code></span><span>id · category · icon · tint · items[{name, level:1–5}]</span><span>Array</span></div>
+      <div class="field-row" role="row"><span><b>08</b> 项目作品 <code>projects</code></span><span>id · title · subtitle · category · year · featured · cover{gradient,glyph} · description · metrics[] · tags[] · role · link</span><span>Array</span></div>
+      <div class="field-row" role="row"><span><b>09</b> 联系方式 <code>contact</code></span><span>availability{status,note} · items[{label,value,icon,tint,copy,link}] · cta{label,icon,link}</span><span>Object</span></div>
+    </div>
+    <p class="sheet-note">任何模块留空（<code>[]</code> 或空字符串），页面上就整块隐藏 —— 导航、底部 Tab、锚点一起消失，不会留下空卡片。所以「还没有作品」不需要删代码，留空即可。</p>
+
+    <h3 class="sheet-h3">模块与顺序</h3>
+    <p class="sheet-note">页面顺序 = <code>settings.sections</code> 数组顺序，导航与底部 Tab 自动跟随。每条里的 <code>enabled</code> 控制显隐，<code>nav / title / desc</code> 是导航文字、模块标题与副标题，都可以改成你自己的说法（比如把「校园实践」改成「实习经历」）。</p>
+
+    <h3 class="sheet-h3">URL 参数</h3>
+    <div class="field-table" role="table" aria-label="URL 参数表">
+      <div class="field-row field-head" role="row"><span role="columnheader">参数</span><span role="columnheader">作用</span><span role="columnheader">场景</span></div>
+      <div class="field-row" role="row"><span><code>?edit=1</code></span><span>直接打开编辑器</span><span>发给朋友填写</span></div>
+      <div class="field-row" role="row"><span><code>?nosplash=1</code></span><span>跳过开屏</span><span>调试</span></div>
+      <div class="field-row" role="row"><span><code>?splash=1</code></span><span>强制重播完整开屏</span><span>演示</span></div>
+      <div class="field-row" role="row"><span><code>?splash=hold</code></span><span>停在开屏终态</span><span>看设计稿</span></div>
+      <div class="field-row" role="row"><span><code>?theme=dark</code></span><span>固定深色 / 浅色</span><span>分享固定外观</span></div>
+    </div>
+
+    <h3 class="sheet-h3">发布到 GitHub Pages</h3>
+    <ol class="steps">
+      <li>把整个目录推到 GitHub 仓库（<code>index.html</code> 与 <code>assets/</code> 同级）</li>
+      <li>仓库 Settings → Pages → Source 选默认分支、目录选 <code>/ (root)</code></li>
+      <li>等一两分钟，访问 <code>https://techxey.github.io/profile/</code></li>
+    </ol>
+    <p class="sheet-note">发布前建议在编辑器「品牌与开屏」里关掉「显示编辑入口」，访客就看不到铅笔按钮了。</p>
+
+    <div class="json-block">
+      <div class="json-head">
+        <span>当前数据源 · <code>window.PROFILE_DATA</code></span>
+        <button class="mini-btn" id="copyJson" type="button">复制 JSON</button>
+      </div>
+      <pre id="jsonPreview" aria-label="数据源 JSON 预览"></pre>
+    </div>
+  </div>
+</section>
+
+<!-- 轻提示 -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript>
+  <div style="padding:24px;font-family:system-ui">此页面由数据驱动渲染，请启用 JavaScript 后查看完整内容。</div>
+</noscript>
+
+<script src="assets/data.js"></script>
+<script src="assets/data.example.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/editor.js"></script>
+</body>
+</html>

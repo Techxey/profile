@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="240" height="240" role="img" aria-labelledby="title desc">
+  <title id="title">专属标记：从 0 开始，一笔一笔写出来</title>
+  <desc id="desc">开口的圆环是 0；从缺口向右上延伸的一笔是一；末端的圆点是尚未写完的下一笔。也暗合计算机里最基本的 0 与 1。</desc>
+  <defs>
+    <linearGradient id="brand" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0A84FF"/>
+      <stop offset="52%" stop-color="#5E5CE6"/>
+      <stop offset="100%" stop-color="#BF5AF2"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#brand)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 74 44 A 34 34 0 0 0 16 68 A 34 34 0 0 0 74 92"/>
+    <path d="M 74 44 L 110 8"/>
+  </g>
+  <circle cx="110" cy="8" r="6" fill="#BF5AF2"/>
+</svg>
